@@ -1,0 +1,15 @@
+{
+	"title"		:	"Galactic Orbit",
+	"type"		:	"Effects",
+	"tags"		:	[ "Roleplay", "Build" ],
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.svn*",
+		".git*",
+		"LICENSE",
+		"*.md"
+	]
+}
+
