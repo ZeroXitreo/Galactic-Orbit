@@ -9,7 +9,8 @@
 		"*.svn*",
 		".git*",
 		"LICENSE",
-		"*.md"
+		"*.md",
+		"icon.jpg"
 	]
 }
 
