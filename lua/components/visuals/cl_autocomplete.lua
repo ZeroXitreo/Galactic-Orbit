@@ -29,7 +29,7 @@ end
 
 function component:ChatTextChanged(str)
 	if type(str) == "table" then str = str[1] end
-	local prefixes = {"/", "!", "@"}
+	local prefixes = {"!", "@"}
 	self.suggestions = {}
 	self.prefix = str:Left(1)
 	if table.HasValue(prefixes, string.Left(str, 1)) then
