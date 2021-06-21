@@ -55,29 +55,36 @@ function component:InitializeTab(parent)
 	self.container.menu.roles = self.container.menu:Add("GalacticItemListView")
 	self.container.menu.roles:Dock(FILL)
 	self.container.menu.roles:DisableScrollbar(true)
+	self.container.menu.roles.OnRowRightClick = function(this, lineId, line)
+		local role = self:GetSelectedRole()
+		if role then
+			local menu = DermaMenu()
+			menu:AddOption("Copy shorthand", function()
+				SetClipboardText(role.shorthand)
+			end)
+			menu:AddOption("Rename", function()
+				galactic.io:String("Rename " .. role.title, "What would you like to rename " .. role.title .. " to?", function(name)
+					LocalPlayer():ConCommand(string.format("orb renamerole %q %q", role.shorthand, name))
+				end, "Apply", "Name", role.title)
+			end)
+			if not role.protected then
+				menu:AddOption("Remove", function()
+					galactic.io:Boolean("Remove role", "Are you sure you want to remove " .. role.title .. "?", function(result)
+						if result and role == self:GetSelectedRole() then
+							LocalPlayer():ConCommand(string.format("orb removerole %q", role.shorthand))
+						end
+					end)
+				end)
+			end
+			menu:Open()
+		end
+	end
 	self.container.menu.roles.OnRowSelected = function(this, index, line)
 		self:RoleSelectedChanged()
 	end
 
-	self.container.menu.remove = self.container.menu:Add("DButton")
-	self.container.menu.remove:Dock(BOTTOM)
-	self.container.menu.remove:DockMargin(0, 6, 0, 0)
-	self.container.menu.remove:SetTall(24)
-	self.container.menu.remove:SetText("Remove")
-	self.container.menu.remove.DoClick = function()
-		local role = self:GetSelectedRole()
-		if role and not role.protected then
-			galactic.io:Boolean("Remove role", "Are you sure you want to remove " .. role.title .. "?", function(result)
-				if result and role == self:GetSelectedRole() then
-					LocalPlayer():ConCommand(string.format("orb removerole %q", role.shorthand))
-				end
-			end)
-		end
-	end
-
-	self.container.menu.new = self.container.menu:Add("DButton")
+	self.container.menu.new = self.container.menu:Add("GaButton")
 	self.container.menu.new:Dock(BOTTOM)
-	self.container.menu.new:SetTall(24)
 	self.container.menu.new:DockMargin(0, 6, 0, 0)
 	self.container.menu.new:SetText("New role")
 	self.container.menu.new.DoClick = function()
@@ -98,21 +105,6 @@ function component:InitializeTab(parent)
 				end
 			end, "Next", "Shorthand", title:lower())
 		end, "Next", "e.g. Donator", _)
-	end
-
-	self.container.menu.rename = self.container.menu:Add("DButton")
-	self.container.menu.rename:Dock(BOTTOM)
-	self.container.menu.rename:SetTall(24)
-	self.container.menu.rename:DockMargin(0, 6, 0, 0)
-	self.container.menu.rename:SetText("Rename")
-	self.container.menu.rename:SetDisabled(true)
-	self.container.menu.rename.DoClick = function()
-		local role = self:GetSelectedRole()
-		if role then
-			galactic.io:String("Rename " .. role.title, "What would you like to rename " .. role.title .. " to?", function(name)
-				LocalPlayer():ConCommand(string.format("orb renamerole %q %q", role.shorthand, name))
-			end, "Apply", "Name", role.title)
-		end
 	end
 
 	self.container.configuration = self.container:Add("DPanel")
@@ -202,9 +194,8 @@ function component:InitializeTab(parent)
 		end
 	end
 
-	self.container.permissions.clearPermissions = self.container.permissions:Add("DButton")
+	self.container.permissions.clearPermissions = self.container.permissions:Add("GaButton")
 	self.container.permissions.clearPermissions:Dock(BOTTOM)
-	self.container.permissions.clearPermissions:SetTall(24)
 	self.container.permissions.clearPermissions:DockMargin(0, 6, 0, 0)
 	self.container.permissions.clearPermissions:SetText("Clear permissions")
 	self.container.permissions.clearPermissions.DoClick = function()
@@ -313,9 +304,6 @@ function component:RoleSelectedChanged()
 	
 		line:InvalidateLayout()
 	end
-
-	self.container.menu.rename:SetDisabled(not role)
-	self.container.menu.remove:SetDisabled(role and role.protected or not role)
 
 	self.container.configuration:SetDisabled(not role)
 	self.container.configuration.color:SetColor(role and role.color or Color(0, 0, 0))
