@@ -54,7 +54,7 @@ function component:OnChatTab(str)
 	if #str:Split(' ') == 1 and not table.IsEmpty(self.suggestions) then
 
 		local commandStr = str:Right(#str - 1)
-		print(commandStr)
+		//print(commandStr)
 
 		local position = 1
 		for i, v in ipairs(self.suggestions) do
