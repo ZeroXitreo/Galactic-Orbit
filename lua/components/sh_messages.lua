@@ -75,7 +75,10 @@ if SERVER then
 	end
 
 	function component:Notify(ply, ...)
-		self:BuildNetMessage(...)
+		local collectedString = self:BuildNetMessage(...)
+		if not ply:IsValid() then
+			print(collectedString)
+		end
 		net.Send(ply)
 	end
 end
@@ -119,7 +122,11 @@ end
 function component:GetPlayers(ply, args)
 
 	if not args or istable(args) and table.IsEmpty(args) then
-		return {ply}
+		if ply:IsValid() then
+			return {ply}
+		else
+			return {}
+		end
 	end
 
 	if isstring(args) then
@@ -151,7 +158,11 @@ end
 function component:GetPlayerInformations(ply, args)
 
 	if not args or istable(args) and table.IsEmpty(args) then
-		return {ply:Info()}
+		if ply:IsValid() then
+			return {ply:Info()}
+		else
+			return {}
+		end
 	end
 
 	if isstring(args) then

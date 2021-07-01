@@ -4,7 +4,7 @@ hook.Add("PostGamemodeLoaded", "GalacticFail", function(ply)
 		if SERVER then
 			MsgC(Color(255, 55, 55), "Galactic Core not installed, please install it from the workshop!\n")
 		else
-			chat.AddText(Color(255, 55, 55), "Galactic Core not installed, please install it from the workshop!")
+			chat.AddText(Color(255, 55, 55), "Galactic Core not installed on the server, please ask the owner to install it from the workshop!")
 		end
 	end
 end)
