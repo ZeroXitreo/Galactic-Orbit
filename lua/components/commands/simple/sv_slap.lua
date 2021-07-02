@@ -21,7 +21,7 @@ function component:Execute(ply, args)
 		end
 		local announcement = {}
 		table.insert(announcement, {"blue", ply:Nick()})
-		table.insert(announcement, {"text", " has set the frags of "})
+		table.insert(announcement, {"text", " has slapped "})
 		galactic.messages:MessageList(announcement, players, #player.GetAll(), function(ply) return ply:Nick() end)
 		table.insert(announcement, {"text", " with "})
 		table.insert(announcement, {"yellow", damage})
