@@ -15,6 +15,7 @@ if SERVER then
 			table.Merge(self.roles, galactic.data:GetTable(self.fileName))
 		else
 			table.Merge(self.roles, self:GetDefault())
+			self:Save()
 		end
 	end
 
@@ -222,7 +223,7 @@ if SERVER then
 		role.shorthand = "owner"
 		role.title = "Owner"
 		role.icon = "icon16/key.png"
-		role.color = Color(math.random(0, 255), math.random(0, 255), math.random(0, 255))
+		role.color = Color(255, 0, 97)
 		role.userGroup = "superadmin"
 		role.protected = true
 		role.allPermissions = true
@@ -236,6 +237,7 @@ if SERVER then
 		role.color = Color(255, 255, 100)
 		role.userGroup = "guest"
 		role.protected = true
+		role.weapons = {gmod_camera = true, gmod_tool = true, weapon_physgun = true}
 		table.insert(roles, role)
 
 		return roles
