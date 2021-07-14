@@ -76,6 +76,26 @@ function component:InitializeTab(parent)
 					end)
 				end)
 			end
+			if not role.allPermissions then
+				menu:AddOption("Clear permissions", function()
+					galactic.io:Boolean("Clear permissions", "Are you sure you want to clear all permissions for " .. role.title .. "?", function(result)
+						if result then
+							LocalPlayer():ConCommand(string.format("orb clearrolepermissions %q", role.shorthand))
+						end
+					end)
+				end)
+				menu:AddOption("Give all permissions", function()
+					galactic.io:Boolean("Give all permissions", "Are you sure you want to give all permissions to " .. role.title .. "?", function(result)
+						if result then
+							for _, category in ipairs({{"permissions", "rolepermission"}, {"tools", "roletool"}, {"weapons", "roleweapon"}, {"entities", "roleentity"}}) do
+								for _, line in ipairs(self.container.permissions.editor[category[1]]:GetLines()) do
+									LocalPlayer():ConCommand(string.format("orb %q %q %q", category[2], role.shorthand, line.permission))
+								end
+							end
+						end
+					end)
+				end)
+			end
 			menu:Open()
 		end
 	end
@@ -191,21 +211,6 @@ function component:InitializeTab(parent)
 		for key, name in SortedPairsByValue(galactic.permissionManager[categoryKey]) do
 			local line = self.container.permissions.editor[categoryKey]:AddLine(name, self.tickPath)
 			line.permission = key
-		end
-	end
-
-	self.container.permissions.clearPermissions = self.container.permissions:Add("GaButton")
-	self.container.permissions.clearPermissions:Dock(BOTTOM)
-	self.container.permissions.clearPermissions:DockMargin(0, 6, 0, 0)
-	self.container.permissions.clearPermissions:SetText("Clear permissions")
-	self.container.permissions.clearPermissions.DoClick = function()
-		local role = self:GetSelectedRole()
-		if role then
-			galactic.io:Boolean("Clear permissions", "Are you sure you want to clear all permissions for " .. role.title .. "?", function(result)
-				if result then
-					LocalPlayer():ConCommand(string.format("orb clearrolepermissions %q", role.shorthand))
-				end
-			end)
 		end
 	end
 
