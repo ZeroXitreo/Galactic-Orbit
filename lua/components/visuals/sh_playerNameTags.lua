@@ -4,6 +4,7 @@ if CLIENT then
 end
 component.title = "Player name tags"
 component.description = "Display player name tags"
+component.permission = component.title
 component.secondsTillAFK = 300
 
 function component:Constructor()
@@ -38,6 +39,7 @@ else
 
 
 
+		if !LocalPlayer():HasPermission(component.permission) then return end
 		if engine.ActiveGamemode() != "sandbox" then return end
 		
 		// Set order of players and exclude the ones who should not be drawn
