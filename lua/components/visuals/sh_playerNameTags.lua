@@ -8,7 +8,8 @@ component.permission = component.title
 component.secondsTillAFK = 300
 
 function component:Constructor()
-	function galactic.registry.Player:IsAFK()
+	local PLAYER = FindMetaTable("Player")
+	function PLAYER:IsAFK()
 		return self:GetNWInt("isAFK") < os.time() - component.secondsTillAFK or false
 	end
 end

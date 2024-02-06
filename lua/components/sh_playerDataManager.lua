@@ -15,7 +15,8 @@ end
 
 function component:Constructor()
 
-	function galactic.registry.Player:Info()
+	local PLAYER = FindMetaTable("Player")
+	function PLAYER:Info()
 		return galactic.pdManager.playersInformation[self:Identifier()] or {
 			nick = self:Nick(),
 			roles = {},
@@ -25,7 +26,7 @@ function component:Constructor()
 		}
 	end
 
-	function galactic.registry.Player:Identifier()
+	function PLAYER:Identifier()
 		if self:IsBot() then
 			return string.lower(self:Nick())
 		elseif game.SinglePlayer() then

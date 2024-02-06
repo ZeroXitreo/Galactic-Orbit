@@ -9,25 +9,25 @@ component.category = "Punishment"
 component.guide = {}
 
 function component:Constructor()
+	local ENTITY = FindMetaTable("Entity")
+	function ENTITY:SetCleanupCreator(ply)
+		self:SetNWString("GalacticCreator", ply:SteamID())
+	end
+	
+	function ENTITY:GetCleanupCreator()
+		return self:GetNWString("GalacticCreator")
+	end
+end
 
-	timer.Simple(0, function()
-		if not galactic.PlayerAddCleanup then
-			galactic.PlayerAddCleanup = galactic.registry.Player.AddCleanup
+function component:OnGamemodeLoaded()
+	local PLAYER = FindMetaTable("Player")
+	if PLAYER.AddCount then
+		galactic.PLAYERAddCountCleanup = galactic.PLAYERAddCountCleanup or PLAYER.AddCount
+		function PLAYER:AddCount(Type, ent) -- self: Player
+			ent:SetCleanupCreator(self)
+			return galactic.PLAYERAddCountCleanup(self, Type, ent)
 		end
-
-		function galactic.registry.Player:AddCleanup(typ, ent)
-			ent:SetCreator(self)
-			galactic:PlayerAddCleanup(self, typ, ent)
-		end
-
-		function galactic.registry.Entity:SetCreator(ply)
-			self:SetNWString("GalacticCreator", ply:SteamID())
-		end
-
-		function galactic.registry.Entity:GetCreator()
-			return self:GetNWString("GalacticCreator")
-		end
-	end)
+	end
 end
 
 function component:Execute(ply, args)
@@ -50,7 +50,7 @@ function component:Execute(ply, args)
 			table.insert(message, {"red", galactic.messages:PlayersToString(players)})
 			local entities = ents.GetAll()
 			for _, ent in ipairs(entities) do
-				if ent:GetCreator() == ply:SteamID() then
+				if ent:GetCleanupCreator() == ply:SteamID() then
 					ent:Remove()
 				end
 			end

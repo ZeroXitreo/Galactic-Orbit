@@ -25,10 +25,12 @@ if SERVER then
 end
 
 function component:Constructor()
+	local ENTITY = FindMetaTable("Entity")
+	local PLAYER = FindMetaTable("Player")
 	if SERVER then
 		self:Load()
 	
-		function galactic.registry.Entity:GetLower(plys)
+		function ENTITY:GetLower(plys)
 			local plysFiltered = {}
 
 			if self:ShouldBypassPermissions() then
@@ -51,12 +53,11 @@ function component:Constructor()
 		end
 	end
 
-	function galactic.registry.Player:Roles()
-
+	function PLAYER:Roles()
 		return component:RolesByInfo(self:Info())
 	end
 
-	function galactic.registry.Player:IsAdmin()
+	function PLAYER:IsAdmin()
 		local userGroup = "admin"
 		if self:IsUserGroup(userGroup) or self:IsSuperAdmin() then return true end
 
@@ -68,7 +69,7 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Player:IsSuperAdmin()
+	function PLAYER:IsSuperAdmin()
 		local userGroup = "superadmin"
 		if self:IsUserGroup(userGroup) then return true end
 
@@ -80,21 +81,21 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Player:Color()
+	function PLAYER:Color()
 		local _, _, color = component:RolesByInfo(self:Info())
 		return color
 	end
 
-	function galactic.registry.Player:Icon()
+	function PLAYER:Icon()
 		local _, _, _, icon = component:RolesByInfo(self:Info())
 		return icon
 	end
 
-	function galactic.registry.Entity:ShouldBypassPermissions()
+	function ENTITY:ShouldBypassPermissions()
 		return SERVER and self.IsListenServerHost and self:IsListenServerHost() or game.SinglePlayer() or not self:IsValid()
 	end
 
-	function galactic.registry.Entity:HasPermission(permission)
+	function ENTITY:HasPermission(permission)
 		if self:ShouldBypassPermissions() then return true end
 
 		local roles = self:Roles()
@@ -107,7 +108,7 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Player:HasWeaponPermission(wep)
+	function PLAYER:HasWeaponPermission(wep)
 		if self:ShouldBypassPermissions() then return true end
 
 		local roles = self:Roles()
@@ -120,7 +121,7 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Player:HasEntityPermission(ent)
+	function PLAYER:HasEntityPermission(ent)
 		if self:ShouldBypassPermissions() then return true end
 
 		local roles = self:Roles()
@@ -133,7 +134,7 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Player:HasToolPermission(tool)
+	function PLAYER:HasToolPermission(tool)
 		if self:ShouldBypassPermissions() then return true end
 
 		local roles = self:Roles()
@@ -146,7 +147,7 @@ function component:Constructor()
 		return false
 	end
 
-	function galactic.registry.Entity:Rank()
+	function ENTITY:Rank()
 		if self:ShouldBypassPermissions() then return 0 end
 
 		local roles = self:Roles()
@@ -157,12 +158,12 @@ function component:Constructor()
 		end
 	end
 
-	function galactic.registry.Entity:GreaterThan(ply)
+	function ENTITY:GreaterThan(ply)
 
 		return self:Rank(ply) < ply:Rank(ply)
 	end
 
-	function galactic.registry.Entity:Nick()
+	function ENTITY:Nick()
 		if not self:IsValid() then
 			return "Console"
 		end
