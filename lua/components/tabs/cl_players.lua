@@ -155,23 +155,23 @@ function component:RemovePlayerLine(lineId)
 end
 
 function component:Think()
-	if self.players:IsValid() then
-		local plys = player.GetAll()
+	if not self.players:IsValid() then return end
+	
+	local plys = player.GetAll()
 
-		for k, line in pairs(self.players:GetLines()) do
-			if not line.player:IsValid() then
-				self:RemovePlayerLine(k)
-			else
-				if line.label:GetText() != line.player:Nick() then
-					line.label:SetText(line.player:Nick())
-				end
+	for k, line in pairs(self.players:GetLines()) do
+		if not line.player:IsValid() then
+			self:RemovePlayerLine(k)
+		else
+			if line.label:GetText() != line.player:Nick() then
+				line.label:SetText(line.player:Nick())
 			end
-			table.RemoveByValue(plys, line.player)
 		end
+		table.RemoveByValue(plys, line.player)
+	end
 
-		for _, ply in ipairs(plys) do
-			self:AddPlayer(ply)
-		end
+	for _, ply in ipairs(plys) do
+		self:AddPlayer(ply)
 	end
 end
 
